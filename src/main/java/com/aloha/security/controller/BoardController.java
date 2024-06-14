@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -67,5 +68,52 @@ public class BoardController {
         return "/board/read";
     }
 
+    @GetMapping("/insert")
+    public String insert() {
 
+        return "/board/insert";
+    }
+
+    @PostMapping("/insert")
+    public String insert(Board board) throws Exception {
+        // 데이터 요청
+       int result = boardService.insert(board);
+        // 리다이렉트
+        // 데이터 처리 성공
+       if(result > 0) {
+           return "redirect:/board/list";
+       }
+        // 데이터 처리 실패
+        return "redirect:/board/insert?error";
+    }
+
+
+    @GetMapping("/update")
+    public String update(@RequestParam("no") int no, Model model) throws Exception {
+        Board board = boardService.select(no);
+        model.addAttribute("board",board);
+        return "/board/update";
+    }
+
+    @PostMapping("/update")
+    public String update(Board board) throws Exception {
+        int result = boardService.update(board);
+
+        if(result > 0) {
+            return "redirect:/board/list";
+        }
+        int no = board.getNo();
+        return "redirect:/board/update?no="+ no + "&error" ;
+    }
+
+    @PostMapping("/delete")
+    public String delete(@RequestParam("no") int no) throws Exception {
+
+        int result = boardService.delete(no);
+
+        if(result > 0) {
+            return "redirect:/board/list";
+        }
+        return "redirect:/board/update?no=" + no + "&error";
+    }
 }

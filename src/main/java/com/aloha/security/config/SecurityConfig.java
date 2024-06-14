@@ -24,14 +24,10 @@ public class SecurityConfig {
                         .requestMatchers("/","/login").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/my/**").hasAnyRole("USER","ADMIN")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 );
-
         http
-                .formLogin((auth) -> auth.loginPage("/login")
-                        .loginProcessingUrl("/loginProc")
-                        .permitAll()
-                );
+                .formLogin((auth)->auth.disable());
 
         http
                 .csrf((auth) -> auth.disable());
