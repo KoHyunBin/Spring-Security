@@ -6,6 +6,8 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,9 @@ public class FileController {
 
     @Autowired
     private FileService fileService;
+
+    @Value("${upload.path}") //application.properties 에 설정한 업로드 경로 가져옴
+    private String uploadPath;
 
     @GetMapping("/{no}")
     public void fileDownload(@PathVariable("no") int no, HttpServletResponse response) throws Exception {
@@ -71,5 +76,42 @@ public class FileController {
 
         // 삭제 실패
         return new ResponseEntity<>("FAIL", HttpStatus.OK);
+    }
+
+    /*
+        이미지 썸네일
+     */
+    // file/img/{no}
+    @GetMapping("/img/{no}")
+    public ResponseEntity<byte[]> thumbnailImg(@PathVariable("no") int no) throws Exception {
+
+        // 파일 번호로 파일 정보 조회
+        Files file = fileService.select(no);
+
+        // Null 체크
+        if(file == null) {
+            String filePath = uploadPath + "/no-image.png";
+            File noImageFile = new File(filePath);
+            byte[] noImageFileData = FileCopyUtils.copyToByteArray(noImageFile);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG);
+
+            return new ResponseEntity<>(noImageFileData,headers,HttpStatus.OK);
+        }
+        // 파일 정보 중에서 파일 경로 가져오기
+        String filePath = file.getFilePath();
+
+        // 파일 객체 생성
+        File f = new File(filePath);
+
+        // 파일 데이터
+        byte[] fileData = FileCopyUtils.copyToByteArray(f);
+
+        // 이미지 컨텐츠 타입 지정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+
+        // new ResponseEntity<>( 데이터, 헤더, 상태코드 )
+        return new ResponseEntity<>(fileData, headers, HttpStatus.OK);
     }
 }

@@ -7,9 +7,20 @@
 <mapper namespace="com.aloha.security.mapper.BoardMapper">
     <!-- 게시글 목록 -->
     <select id="list" resultType="Board">
+        SELECT b.*
+        ,f.no file_no
+        ,f.file_name
+        ,f.file_path
+        ,f.file_code
+        FROM board b LEFT JOIN (
         SELECT *
-        FROM board
-        ORDER BY reg_date DESC
+        FROM file
+        WHERE parent_table = "board"
+        AND file_code = 1
+        ) f
+        on (b.no = f.parent_no)
+        ORDER BY b.reg_date DESC
+        LIMIT #{index}, #{rows}
     </select>
 
     <!-- 게시글 조회 -->
