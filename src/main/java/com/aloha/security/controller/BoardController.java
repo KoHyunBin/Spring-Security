@@ -1,7 +1,9 @@
 package com.aloha.security.controller;
 
 import com.aloha.security.dto.Board;
+import com.aloha.security.dto.Files;
 import com.aloha.security.service.BoardService;
+import com.aloha.security.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,6 +38,9 @@ public class BoardController {
 
     @Autowired // 의존성 자동 주입
     private BoardService boardService; //@Service를 --Impl 에 등록
+
+    @Autowired
+    private FileService fileService;
     /*
         게시글 목록 조회 화면
         @return
@@ -59,11 +64,19 @@ public class BoardController {
         @return
      */
     @GetMapping("/read")
-    public String read(@RequestParam("no") int no, Model model) throws Exception {
+    public String read(@RequestParam("no") int no, Model model, Files file) throws Exception {
         //데이터 요청
         Board board = boardService.select(no);
+
+        //파일 목록 요청
+        file.setParentTable("board");
+        file.setParentNo(no);
+        List<Files> fileList = fileService.listByParent(file);
+
         //모델 등록
         model.addAttribute("board",board);
+        model.addAttribute("fileList",fileList);
+
         //뷰페이지 지정
         return "/board/read";
     }
@@ -76,6 +89,8 @@ public class BoardController {
 
     @PostMapping("/insert")
     public String insert(Board board) throws Exception {
+        log.info(board.toString());
+
         // 데이터 요청
        int result = boardService.insert(board);
         // 리다이렉트
@@ -89,9 +104,18 @@ public class BoardController {
 
 
     @GetMapping("/update")
-    public String update(@RequestParam("no") int no, Model model) throws Exception {
+    public String update(@RequestParam("no") int no, Model model, Files file) throws Exception {
+        //데이터 요청
         Board board = boardService.select(no);
+
+        //파일 목록 요청
+        file.setParentTable("board");
+        file.setParentNo(no);
+        List<Files> fileList = fileService.listByParent(file);
+
+        //모델 등록
         model.addAttribute("board",board);
+        model.addAttribute("fileList",fileList);
         return "/board/update";
     }
 
@@ -112,6 +136,12 @@ public class BoardController {
         int result = boardService.delete(no);
 
         if(result > 0) {
+            // 첨부파일 삭제
+            Files file = new Files();
+            file.setParentTable("board");
+            file.setParentNo(no);
+            fileService.deleteByParent(file);
+
             return "redirect:/board/list";
         }
         return "redirect:/board/update?no=" + no + "&error";

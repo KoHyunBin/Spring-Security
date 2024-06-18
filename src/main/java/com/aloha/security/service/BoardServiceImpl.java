@@ -1,17 +1,31 @@
 package com.aloha.security.service;
 
 import com.aloha.security.dto.Board;
+import com.aloha.security.dto.Files;
 import com.aloha.security.mapper.BoardMapper;
+import com.aloha.security.mapper.FileMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
+@Slf4j
 @Service    // 서비스 역할의 스프링 빈
 public class BoardServiceImpl implements BoardService {
 
     @Autowired
     private BoardMapper boardMapper;
+
+    @Autowired
+    private FileService fileService;
+
+
 
     /**
      * 게시글 목록 조회
@@ -54,6 +68,27 @@ public class BoardServiceImpl implements BoardService {
          *        ➡ return result
          */
         int result = boardMapper.insert(board);
+
+
+        // 파일 업로드
+        String parentTable = "board";
+        int parentNo = boardMapper.maxPk();
+
+        List<MultipartFile> fileList = board.getFile();
+        if( !fileList.isEmpty()) {
+            for(MultipartFile file : fileList) {
+
+                if( file.isEmpty() ) continue;
+
+                // 파일 업로드 요청
+                Files uploadFile = new Files();
+                uploadFile.setParentTable(parentTable);
+                uploadFile.setParentNo(parentNo);
+                uploadFile.setFile(file);
+
+                fileService.upload(uploadFile);
+            }
+        }
         return result;
     }
 
