@@ -2,6 +2,7 @@ package com.aloha.security.service;
 
 import com.aloha.security.dto.Board;
 import com.aloha.security.dto.Files;
+import com.aloha.security.dto.Option;
 import com.aloha.security.dto.Page;
 import com.aloha.security.mapper.BoardMapper;
 import com.aloha.security.mapper.FileMapper;
@@ -140,6 +141,12 @@ public class BoardServiceImpl implements BoardService {
          */
         int result = boardMapper.delete(no);
         return result;
+    }
+
+    @Override
+    public List<Board> search(Option option) throws Exception {
+        List<Board> boardList = boardMapper.search(option);
+        return boardList;
     }
 
 

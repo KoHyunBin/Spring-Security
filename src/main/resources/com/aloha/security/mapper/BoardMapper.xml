@@ -63,4 +63,29 @@
         FROM board
     </select>
 
+    <!-- 게시글 목록 검색 -->
+    <select id="search" resultType="Board">
+        SELECT *
+        FROM board
+        WHERE
+            <if test="option.code == 0">
+                title LIKE CONCAT('%', '${option.keyword}', '%')
+                OR writer LIKE CONCAT('%', '${option.keyword}', '%')
+                OR content LIKE CONCAT('%', '${option.keyword}', '%')
+            </if>
+            <if test="option.code == 1">
+                title LIKE CONCAT('%','${option.keyword}','%')
+            </if>
+            <if test="option.code == 2">
+                content LIKE CONCAT('%','${option.keyword}','%')
+            </if>
+            <if test="option.code == 3">
+                    title LIKE CONCAT('%','${option.keyword}','%')
+                OR content LIKE CONCAT('%','${option.keyword}','%')
+            </if>
+            <if test="option.code == 4">
+                writer LIKE CONCAT('%','${option.keyword}','%')
+            </if>
+        ORDER BY reg_date DESC
+    </select>
 </mapper>

@@ -70,12 +70,21 @@ public class Page {
 
     //페이징 처리 수식
     public void calc() {
+        // 첫 번호
         this.first = 1;
+        // 마지막 번호
         this.last = (this.total -1 ) / rows + 1;
+        // 시작 번호
         this.start = ((page-1) / count) * count + 1;
+        // 끝 번호
         this.end = ((page-1) / count + 1) * count;
+        if( this.end > this.last) this.end = this.last;
+
+        // 이전 번호
         this.prev = this.page - 1;
+        // 다음 번호
         this.next = this.page + 1;
+        // 데이터 순서 번호
         this.index = (this.page - 1) * this.rows;
     }
 }

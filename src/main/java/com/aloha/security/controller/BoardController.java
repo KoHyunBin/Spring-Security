@@ -2,6 +2,7 @@ package com.aloha.security.controller;
 
 import com.aloha.security.dto.Board;
 import com.aloha.security.dto.Files;
+import com.aloha.security.dto.Option;
 import com.aloha.security.dto.Page;
 import com.aloha.security.service.BoardService;
 import com.aloha.security.service.FileService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -48,17 +50,30 @@ public class BoardController {
         @throws Exception
      */
     @GetMapping("/list")
-    public String list(Model model, Page page) throws Exception{
+    public String list(Model model, Page page, Option option) throws Exception{
         // 게시글 데이터 개수 조회
 
         //데이터 요청
-        List<Board> boardList = boardService.list(page);
+        // List<Board> boardList = boardService.list(page);
+        List<Board> boardList = boardService.search(option);
 
         // 페이징
         log.info("Page : " + page);
+        // 검색
+        log.info("option : " + option);
 
         //모델 등록
         model.addAttribute("boardList", boardList);
+        model.addAttribute("page",page);
+
+        //동적으로 옵션값을 가져오는 경우
+        List<Option> optionList = new ArrayList<Option>();
+        optionList.add(new Option("전체",0));
+        optionList.add(new Option("제목",1));
+        optionList.add(new Option("내용",2));
+        optionList.add(new Option("제목+내용",3));
+        optionList.add(new Option("작성자",4));
+        model.addAttribute("optionList",optionList);
 
         //뷰 페이지 지정
         return "/board/list"; // resources/templates/board/list.html
@@ -153,4 +168,6 @@ public class BoardController {
         }
         return "redirect:/board/update?no=" + no + "&error";
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.aloha.security.service;
 
 import com.aloha.security.dto.Board;
+import com.aloha.security.dto.Option;
 import com.aloha.security.dto.Page;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,9 @@ public interface BoardService {
         public int update(Board board) throws Exception;
         // 게시글 삭제
         public int delete(int no) throws Exception;
-        // 데이터 개수 조회
+
+        // 게시글 목록 - [검색]
+        public List<Board> search(Option option) throws Exception;
 
 
 
