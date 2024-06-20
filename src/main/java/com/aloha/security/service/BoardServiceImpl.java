@@ -2,6 +2,7 @@ package com.aloha.security.service;
 
 import com.aloha.security.dto.Board;
 import com.aloha.security.dto.Files;
+import com.aloha.security.dto.Page;
 import com.aloha.security.mapper.BoardMapper;
 import com.aloha.security.mapper.FileMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -31,13 +32,19 @@ public class BoardServiceImpl implements BoardService {
      * 게시글 목록 조회
      */
     @Override
-    public List<Board> list() throws Exception {
+    public List<Board> list(Page page) throws Exception {
+        // 게시글 데이터 개수 조회
+        int total = boardMapper.count();
+        page.setTotal(total);
+
         // TODO : boardMapper 로 list() 호출
         /*
          *        ➡ List<Board> boardList 로 받아옴
          *        ➡ return boardList
          */
-        List<Board> boardList = boardMapper.list();
+        List<Board> boardList = boardMapper.list(page);
+
+
         return boardList;
     }
 

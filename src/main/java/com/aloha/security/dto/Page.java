@@ -14,7 +14,9 @@ package com.aloha.security.dto;
     마지막 번호
  */
 
+import lombok.Data;
 
+@Data
 public class Page {
 
     // 페이징 기본값
@@ -55,6 +57,13 @@ public class Page {
         this.page = page;
         this.rows = rows;
         this.count = count;
+        this.total = total;
+        calc();
+    }
+
+    // setter
+    // - 데이터 개수 지정 후, 페이징 수식 재계산
+    public void setTotal(int total) {
         this.total = total;
         calc();
     }

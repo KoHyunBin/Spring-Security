@@ -56,4 +56,11 @@
         SELECT MAX(no)
         FROM board
     </select>
+
+    <!-- 데이터 개수 조회 -->
+    <select id="count" resultType="int">
+        SELECT COUNT(*)
+        FROM board
+    </select>
+
 </mapper>

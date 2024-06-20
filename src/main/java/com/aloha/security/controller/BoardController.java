@@ -2,6 +2,7 @@ package com.aloha.security.controller;
 
 import com.aloha.security.dto.Board;
 import com.aloha.security.dto.Files;
+import com.aloha.security.dto.Page;
 import com.aloha.security.service.BoardService;
 import com.aloha.security.service.FileService;
 import lombok.extern.slf4j.Slf4j;
@@ -47,9 +48,15 @@ public class BoardController {
         @throws Exception
      */
     @GetMapping("/list")
-    public String list(Model model) throws Exception{
+    public String list(Model model, Page page) throws Exception{
+        // 게시글 데이터 개수 조회
+
         //데이터 요청
-        List<Board> boardList = boardService.list();
+        List<Board> boardList = boardService.list(page);
+
+        // 페이징
+        log.info("Page : " + page);
+
         //모델 등록
         model.addAttribute("boardList", boardList);
 
