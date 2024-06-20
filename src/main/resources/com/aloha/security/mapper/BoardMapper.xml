@@ -19,8 +19,27 @@
         AND file_code = 1
         ) f
         on (b.no = f.parent_no)
+        WHERE
+        <if test="option.code == 0">
+            title LIKE CONCAT('%', '${option.keyword}', '%')
+            OR writer LIKE CONCAT('%', '${option.keyword}', '%')
+            OR content LIKE CONCAT('%', '${option.keyword}', '%')
+        </if>
+        <if test="option.code == 1">
+            title LIKE CONCAT('%','${option.keyword}','%')
+        </if>
+        <if test="option.code == 2">
+            content LIKE CONCAT('%','${option.keyword}','%')
+        </if>
+        <if test="option.code == 3">
+            title LIKE CONCAT('%','${option.keyword}','%')
+            OR content LIKE CONCAT('%','${option.keyword}','%')
+        </if>
+        <if test="option.code == 4">
+            writer LIKE CONCAT('%','${option.keyword}','%')
+        </if>
         ORDER BY b.reg_date DESC
-        LIMIT #{index}, #{rows}
+        LIMIT #{page.index}, #{page.rows}
     </select>
 
     <!-- 게시글 조회 -->
@@ -57,10 +76,29 @@
         FROM board
     </select>
 
-    <!-- 데이터 개수 조회 -->
+    <!-- 데이터 개수 조회 - [검색] -->
     <select id="count" resultType="int">
         SELECT COUNT(*)
         FROM board
+        WHERE
+        <if test="option.code == 0">
+            title LIKE CONCAT('%', '${option.keyword}', '%')
+            OR writer LIKE CONCAT('%', '${option.keyword}', '%')
+            OR content LIKE CONCAT('%', '${option.keyword}', '%')
+        </if>
+        <if test="option.code == 1">
+            title LIKE CONCAT('%','${option.keyword}','%')
+        </if>
+        <if test="option.code == 2">
+            content LIKE CONCAT('%','${option.keyword}','%')
+        </if>
+        <if test="option.code == 3">
+            title LIKE CONCAT('%','${option.keyword}','%')
+            OR content LIKE CONCAT('%','${option.keyword}','%')
+        </if>
+        <if test="option.code == 4">
+            writer LIKE CONCAT('%','${option.keyword}','%')
+        </if>
     </select>
 
     <!-- 게시글 목록 검색 -->
@@ -88,4 +126,12 @@
             </if>
         ORDER BY reg_date DESC
     </select>
+
+    <!-- 조회수 증가 -->
+    <update id="view">
+        UPDATE board
+            SET views = views + 1
+        WHERE no = #{no}
+    </update>
+
 </mapper>

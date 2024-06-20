@@ -33,9 +33,9 @@ public class BoardServiceImpl implements BoardService {
      * 게시글 목록 조회
      */
     @Override
-    public List<Board> list(Page page) throws Exception {
+    public List<Board> list(Page page, Option option) throws Exception {
         // 게시글 데이터 개수 조회
-        int total = boardMapper.count();
+        int total = boardMapper.count(option);
         page.setTotal(total);
 
         // TODO : boardMapper 로 list() 호출
@@ -43,7 +43,7 @@ public class BoardServiceImpl implements BoardService {
          *        ➡ List<Board> boardList 로 받아옴
          *        ➡ return boardList
          */
-        List<Board> boardList = boardMapper.list(page);
+        List<Board> boardList = boardMapper.list(page, option);
 
 
         return boardList;
@@ -147,6 +147,12 @@ public class BoardServiceImpl implements BoardService {
     public List<Board> search(Option option) throws Exception {
         List<Board> boardList = boardMapper.search(option);
         return boardList;
+    }
+
+    @Override
+    public int view(int no) throws Exception {
+        log.info(no + "번 글 조회수 증가...");
+        return boardMapper.view(no);
     }
 
 

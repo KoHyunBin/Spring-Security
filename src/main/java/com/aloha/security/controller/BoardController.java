@@ -51,11 +51,11 @@ public class BoardController {
      */
     @GetMapping("/list")
     public String list(Model model, Page page, Option option) throws Exception{
-        // 게시글 데이터 개수 조회
 
         //데이터 요청
-        // List<Board> boardList = boardService.list(page);
-        List<Board> boardList = boardService.search(option);
+        // List<Board> boardList = boardService.search(option);
+        List<Board> boardList = boardService.list(page,option); // [페이지] + [검색]
+
 
         // 페이징
         log.info("Page : " + page);
@@ -89,6 +89,9 @@ public class BoardController {
     public String read(@RequestParam("no") int no, Model model, Files file) throws Exception {
         //데이터 요청
         Board board = boardService.select(no);
+
+        //조회수 증가
+        int views = boardService.view(no);
 
         //파일 목록 요청
         file.setParentTable("board");

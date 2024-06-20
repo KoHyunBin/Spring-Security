@@ -12,7 +12,7 @@ public interface BoardService {
 
 
         // 게시글 목록
-        public List<Board> list(Page page) throws Exception;
+        public List<Board> list(Page page, Option option) throws Exception;
         // 게시글 조회
         public Board select(int no) throws Exception;
         // 게시글 등록
@@ -25,6 +25,7 @@ public interface BoardService {
         // 게시글 목록 - [검색]
         public List<Board> search(Option option) throws Exception;
 
-
+        // 조회수 증가
+        public int view(int no) throws Exception;
 
 }
